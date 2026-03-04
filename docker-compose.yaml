@@ -1,0 +1,28 @@
+services:
+  ibm-mq:
+    image: icr.io/ibm-messaging/mq:9.4.3.1-r1
+    container_name: ibm-mq-server
+    hostname: ibm-mq
+    ports:
+      - "1414:1414"  # MQ Queue Manager port
+      - "9443:9443"  # MQ Console port (HTTPS)
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+      - MQ_APP_PASSWORD=admin     # Changed: 8+ characters
+      - MQ_ADMIN_PASSWORD=admin  # Changed: 8+ characters
+      - MQ_ENABLE_EMBEDDED_WEB_SERVER=true
+      - MQ_DEV=true
+    volumes:
+      - mq-data:/mnt/mqm
+      - ./mq-mqsc/:/etc/mqm/config:ro
+    networks:
+      - mq-network
+    restart: unless-stopped
+
+volumes:
+  mq-data:  # Define the named volume
+
+networks:
+  mq-network:
+    driver: bridge
