@@ -1,0 +1,12 @@
+* Define SVRCONN channel for client connections
+DEFINE CHANNEL(DEV.APP.SVRCONN) CHLTYPE(SVRCONN) TRPTYPE(TCP) REPLACE
+
+* Disable channel authentication for testing (simplifies setup)
+ALTER QMGR CHLAUTH(DISABLED)
+ALTER QMGR CONNAUTH('')
+
+* Refresh security
+REFRESH SECURITY TYPE(CONNAUTH)
+
+* Display channel to verify
+DISPLAY CHANNEL(DEV.APP.SVRCONN)

@@ -4,24 +4,40 @@ services:
     container_name: ibm-mq-server
     hostname: ibm-mq
     ports:
-      - "1414:1414"  # MQ Queue Manager port
-      - "9443:9443"  # MQ Console port (HTTPS)
+      - "1414:1414"
+      - "9443:9443"
     environment:
       - LICENSE=accept
       - MQ_QMGR_NAME=QM1
-      - MQ_APP_PASSWORD=admin     # Changed: 8+ characters
-      - MQ_ADMIN_PASSWORD=admin  # Changed: 8+ characters
+      - MQ_APP_PASSWORD=admin
+      - MQ_ADMIN_PASSWORD=admin
       - MQ_ENABLE_EMBEDDED_WEB_SERVER=true
       - MQ_DEV=true
     volumes:
-      - mq-data:/mnt/mqm
-      - ./mq-mqsc/:/etc/mqm/config:ro
+      - ./config/queue.mqsc:/etc/mqm/20-config.mqsc
+      - ./config/server1-setup.mqsc:/etc/mqm/21-server1-setup.mqsc
     networks:
       - mq-network
     restart: unless-stopped
 
-volumes:
-  mq-data:  # Define the named volume
+  ibm-mq-outro:
+    image: icr.io/ibm-messaging/mq:9.4.3.1-r1
+    container_name: ibm-mq-server-outro
+    hostname: ibm-mq-outro
+    ports:
+      - "1515:1414"
+      - "9445:9443"
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+      - MQ_APP_PASSWORD=admin
+      - MQ_ADMIN_PASSWORD=admin
+      - MQ_ENABLE_EMBEDDED_WEB_SERVER=true
+      - MQ_DEV=true
+      - MQSERVER=DEV.APP.SVRCONN/TCP/ibm-mq-server(1414) # Connect to Server 1
+    networks:
+      - mq-network
+    restart: unless-stopped
 
 networks:
   mq-network:
