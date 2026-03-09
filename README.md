@@ -37,22 +37,22 @@ docker-compose up -d
 > seq 1 100 | while read num; do echo "Batch message $num"; done | docker exec -i ibm-mq-server /opt/mqm/samp/bin/amqsput QE.LOCAL.TEST QM1
 
 # Generate 100 lines using a here document
-´´´
+```
 (
   for i in {1..100}; do
     echo "Message $i sent at $(date)"
   done
 ) | docker exec -i ibm-mq-server /opt/mqm/samp/bin/amqsput DEV.QUEUE.1 QM1
-´´´
+```
 
 # Progress Indicator
-´´´
+```
 for i in {1..100000}; do
   echo "Sending message $i of 100000"
   echo "Message $i" | docker exec -i ibm-mq-server /opt/mqm/samp/bin/amqsput DEV.QUEUE.1 QM1 > /dev/null
 done
 echo "All 100000 messages sent!"
-´´´
+```
 
 # send one message
 > echo "test" | docker exec -i ibm-mq-server /opt/mqm/samp/bin/amqsput' QE.LOCAL.TEST QM1
